@@ -16,16 +16,35 @@ const config: Phaser.Types.Core.GameConfig = {
   parent: 'game-container',
   scene: {
     preload: preload,
-    create: create
+    create: create,
+    update: update
   }
 };
 
 const game = new Phaser.Game(config);
+
+let player: Phaser.GameObjects.Rectangle;
+let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
 function preload() {
   // Preload assets if needed
 }
 
 function create() {
-  // Create game objects if needed
+  player = this.add.rectangle(320, 240, 50, 50, 0x0000ff);
+  cursors = this.input.keyboard.createCursorKeys();
+}
+
+function update() {
+  if (cursors.left.isDown) {
+    player.x -= 5;
+  } else if (cursors.right.isDown) {
+    player.x += 5;
+  }
+
+  if (cursors.up.isDown) {
+    player.y -= 5;
+  } else if (cursors.down.isDown) {
+    player.y += 5;
+  }
 }
