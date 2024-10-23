@@ -1,5 +1,5 @@
 import './style.css';
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
