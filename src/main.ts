@@ -1,5 +1,6 @@
 import './style.css';
 import * as Phaser from 'phaser';
+import { MazeGenerator, MazeNode } from './mazeGenerator';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -25,26 +26,57 @@ const game = new Phaser.Game(config);
 
 let player: Phaser.GameObjects.Rectangle;
 let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+let maze: MazeNode[][];
 
 function preload() {
   // Preload assets if needed
 }
 
 function create() {
-  player = this.add.rectangle(320, 240, 50, 50, 0x0000ff);
+  const mazeGenerator = new MazeGenerator(20, 15);
+  mazeGenerator.generateMaze();
+  maze = mazeGenerator.maze;
+
+  for (let y = 0; y < maze.length; y++) {
+    for (let x = 0; x < maze[y].length; x++) {
+      const node = maze[y][x];
+      if (node.isWall) {
+        this.add.rectangle(x * 32, y * 32, 32, 32, 0x000000).setOrigin(0);
+      } else if (node.isDoor) {
+        this.add.rectangle(x * 32, y * 32, 32, 32, 0x00ff00).setOrigin(0);
+      }
+    }
+  }
+
+  player = this.add.rectangle(32, 32, 32, 32, 0x0000ff).setOrigin(0);
   cursors = this.input.keyboard.createCursorKeys();
 }
 
 function update() {
+  const speed = 2;
+  let newX = player.x;
+  let newY = player.y;
+
   if (cursors.left.isDown) {
-    player.x -= 5;
+    newX -= speed;
   } else if (cursors.right.isDown) {
-    player.x += 5;
+    newX += speed;
   }
 
   if (cursors.up.isDown) {
-    player.y -= 5;
+    newY -= speed;
   } else if (cursors.down.isDown) {
-    player.y += 5;
+    newY += speed;
+  }
+
+  const playerNodeX = Math.floor(newX / 32);
+  const playerNodeY = Math.floor(newY / 32);
+
+  if (maze[playerNodeY] && maze[playerNodeY][playerNodeX]) {
+    const node = maze[playerNodeY][playerNodeX];
+    if (!node.isWall) {
+      player.x = newX;
+      player.y = newY;
+    }
   }
 }
