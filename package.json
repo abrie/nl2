@@ -16,6 +16,5 @@
     "autoprefixer": "^10.0.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.0.0"
   }
 }
